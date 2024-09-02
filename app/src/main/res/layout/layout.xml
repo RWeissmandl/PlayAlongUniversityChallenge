@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Top TextView to show the total -->
+    <TextView
+        android:id="@+id/textViewTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: 0"
+        android:textSize="24sp"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp"/>
+
+    <!-- Starter Section -->
+    <TextView
+        android:id="@+id/textViewStarter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Starter: 0"
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
+
+    <Button
+        android:id="@+id/buttonStarter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add 10 to Starter"/>
+
+    <!-- Bonus Section -->
+    <TextView
+        android:id="@+id/textViewBonus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bonus: 0"
+        android:textSize="18sp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"/>
+
+    <Button
+        android:id="@+id/buttonBonus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add 10 to Bonus"/>
+
+</LinearLayout>
