@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -130,21 +132,28 @@ class MainActivity : ComponentActivity() {
                             .fillMaxWidth()
                             .padding(15.dp)
                     ) {
-                        Button(onClick = {
-                            starterCount -= 10
-                        }) {
+                        Button(
+                            onClick = { starterCount -= 10 },
+                            colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
+                            shape = RectangleShape
+                        ) {
                             Text("-10")
                         }
-                        Button(onClick = {
-                            bonusCount -= 5
-                        }) {
+                        Button(
+                            onClick = { bonusCount -= 5 },
+                            colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
+                            shape = RectangleShape
+                            ) {
                             Text("-5")
                         }
                         Button(onClick = {
                             starterCount = 0
                             bonusCount = 0
                             total = 0
-                        }) {
+                        },
+                            colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
+                            shape = RectangleShape)
+                        {
                             Text("Reset")
                         }
                     }
@@ -157,8 +166,10 @@ class MainActivity : ComponentActivity() {
 fun Question(title: String, questionType: Int, count: Int, onCountChange: (Int) -> Unit) {
     Button(onClick = {
         val newCount = count + questionType
-        onCountChange(newCount)
-    }) {
+        onCountChange(newCount) },
+        colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
+        shape = RectangleShape
+    ) {
         Text(
             "$title   +$questionType",
         )
