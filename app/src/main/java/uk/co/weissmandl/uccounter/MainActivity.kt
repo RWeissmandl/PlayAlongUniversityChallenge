@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -45,54 +46,7 @@ class MainActivity : ComponentActivity() {
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .background(color = Color.Black)
-                            .fillMaxWidth()
-                            .padding(2.dp)
-                            .height(58.dp)
-                    ) {
-                        Text (
-                            text = " UC ",
-                            color = Color(0xFFbcfafc),
-                            fontFamily = helveticaneue,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 30.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .background(color = Color(0xFF2f00f6))
-                                .height(50.dp)
-                                .width(50.dp)
-                                .wrapContentHeight()
-                        )
-                        Text (
-                            text=" University Challenge ",
-                            color = Color.Black,
-                            fontFamily = helveticaneue,
-                            fontSize = 30.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .background(color = Color(0xFFfbff9d))
-                                .weight(1f)
-                                .height(45.dp)
-                                .wrapContentHeight()
-                        )
-                        Text (
-                            text=" $total ",
-                            color = Color(0xFFbcfafc),
-                            fontFamily = helveticaneue,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 30.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .background(color = Color(0xFF2f00f6))
-                                .height(50.dp)
-                                .width(50.dp)
-                                .wrapContentHeight()
-                        )
-                    }
+                    Banner(fontFamily = helveticaneue, total = "$total")
                     Spacer(modifier = Modifier.height(50.dp))
 
                     Text(
@@ -132,50 +86,104 @@ class MainActivity : ComponentActivity() {
                             .fillMaxWidth()
                             .padding(15.dp)
                     ) {
-                        Button(
-                            onClick = { starterCount -= 10 },
-                            colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
-                            shape = RectangleShape
-                        ) {
-                            Text("-10")
-                        }
-                        Button(
+                        homePageButton(
+                            onClick = { bonusCount -= 10 },
+                            text = "-10"
+                        )
+                        homePageButton(
                             onClick = { bonusCount -= 5 },
-                            colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
-                            shape = RectangleShape
-                            ) {
-                            Text("-5")
-                        }
-                        Button(onClick = {
-                            starterCount = 0
-                            bonusCount = 0
-                            total = 0
-                        },
-                            colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
-                            shape = RectangleShape)
-                        {
-                            Text("Reset")
+                            text = "-5"
+                        )
+                        homePageButton(
+                            onClick = {
+                                starterCount = 0
+                                bonusCount = 0
+                                total = 0 },
+                            text = "Reset"
+                        )
                         }
                     }
                 }
             }
-        }
     }
+}
 
 @Composable
 fun Question(title: String, questionType: Int, count: Int, onCountChange: (Int) -> Unit) {
-    Button(onClick = {
-        val newCount = count + questionType
-        onCountChange(newCount) },
-        colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
-        shape = RectangleShape
-    ) {
-        Text(
-            "$title   +$questionType",
-        )
-    }
+    homePageButton(
+        onClick = {
+            val newCount = count + questionType
+            onCountChange(newCount) },
+        text = "$title   +$questionType"
+    )
     Text(
         text = "$count",
         fontSize = 30.sp,
     )
-}}
+}
+
+@Composable
+fun homePageButton(onClick: () -> Unit, text: String) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
+        shape = RectangleShape
+    ) {
+        Text(
+            text = text,
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+fun Banner(fontFamily: FontFamily, total: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .background(color = Color.Black)
+            .fillMaxWidth()
+            .padding(2.dp)
+            .height(58.dp)
+    ) {
+        Text (
+            text = " UC ",
+            color = Color.White,
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .background(color = Color(0xFF2f00f6))
+                .height(50.dp)
+                .width(50.dp)
+                .wrapContentHeight()
+        )
+        Text (
+            text=" University Challenge ",
+            color = Color.Black,
+            fontFamily = fontFamily,
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .background(color = Color(0xFFfbff9d))
+                .weight(1f)
+                .height(45.dp)
+                .wrapContentHeight()
+        )
+        Text (
+            text=" $total ",
+            color = Color.White,
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .background(color = Color(0xFF2f00f6))
+                .height(50.dp)
+                .width(50.dp)
+                .wrapContentHeight()
+        )
+    }
+}
