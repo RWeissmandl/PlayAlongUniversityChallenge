@@ -4,27 +4,40 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import uk.co.weissmandl.uccounter.ui.theme.UCCounterTheme
 
 class MainActivity : ComponentActivity() {
+    data class Score(val total: Int, val starterCount: Int, val bonusCount: Int)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -35,9 +48,9 @@ class MainActivity : ComponentActivity() {
                 val helveticaneue = FontFamily(
                     Font(R.font.helveticaneue, FontWeight.Bold)
                 )
+                var savedScores by remember { mutableStateOf(listOf<Score>()) }
 
                 total = starterCount + bonusCount
-
 
                 Column(
                     modifier = Modifier
@@ -78,6 +91,23 @@ class MainActivity : ComponentActivity() {
                         })
                     }
                     Spacer(modifier = Modifier.weight(1f))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        homePageButton(
+                            onClick = { val newScore = Score(total, starterCount, bonusCount)
+                                      savedScores = savedScores + newScore
+                                    starterCount = 0
+                                    bonusCount = 0
+                                    total = 0
+                                      },
+                            text = "Save"
+                        )}
+                    Spacer(modifier = Modifier.weight(1f))
+                    ScoreScreen(savedScores = savedScores)
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -187,3 +217,18 @@ fun Banner(fontFamily: FontFamily, total: String) {
         )
     }
 }
+//@Composable
+//fun ScoreCard(score: MainActivity.Score) {
+//        Text (text = "${score.total}")
+//        Text (text = "${score.starterCount}")
+//        Text (text = "${score.bonusCount}")
+//}
+//@Composable
+//fun Scores(scores: List<MainActivity.Score>) {
+//    LazyColumn {
+//        items(items = scores) { score ->
+//            ScoreCard(score = score)
+//}}}
+//    LazyColumn { items(items = scores) { score -> ScoreCard(score) }}}
+
+//Text("Number of scores: ${scores.size}") THIS WILL GIVE ME TOTAL AMOUNT OF SCORES ;)
