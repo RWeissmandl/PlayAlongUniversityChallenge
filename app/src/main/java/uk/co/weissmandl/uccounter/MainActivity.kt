@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import uk.co.weissmandl.uccounter.ui.theme.UCCounterTheme
 
+
 class MainActivity : ComponentActivity() {
     data class Score(val total: Int, val starterCount: Int, val bonusCount: Int)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +50,7 @@ class MainActivity : ComponentActivity() {
                     Font(R.font.helveticaneue, FontWeight.Bold)
                 )
                 var savedScores by remember { mutableStateOf(listOf<Score>()) }
+//                val navController = rememberNavController()
 
                 total = starterCount + bonusCount
 
@@ -107,7 +109,6 @@ class MainActivity : ComponentActivity() {
                             text = "Save"
                         )}
                     Spacer(modifier = Modifier.weight(1f))
-                    ScoreScreen(savedScores = savedScores)
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -132,6 +133,7 @@ class MainActivity : ComponentActivity() {
                             text = "Reset"
                         )
                         }
+                    ScoreScreen(savedScores = savedScores)
                     }
                 }
             }
