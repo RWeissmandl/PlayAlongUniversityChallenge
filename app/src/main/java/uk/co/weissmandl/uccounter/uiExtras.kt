@@ -1,5 +1,7 @@
 package uk.co.weissmandl.uccounter
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +38,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import uk.co.weissmandl.uccounter.ui.theme.blueColour
 import uk.co.weissmandl.uccounter.ui.theme.greyColour
 import uk.co.weissmandl.uccounter.ui.theme.yellowColour
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun BottomNavBar(navController: NavController) {
@@ -72,58 +76,6 @@ enum class BottomNavItem(val route: String, val icon: ImageVector, val title: St
     Home("home", Icons.Default.Home, "Play"),
     Scores("scores", Icons.Default.List, "Scores"),
     Averages("averages", Icons.Default.CheckCircle, "Averages")
-}
-@Composable
-fun Banner(fontFamily: FontFamily, total: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .background(color = Color.Black)
-            .fillMaxWidth()
-            .padding(2.dp)
-            .height(58.dp)
-    ) {
-        Text (
-            text = " UC ",
-            color = Color.White,
-            fontFamily = fontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .background(color = Color(0xFF2f00f6))
-                .height(50.dp)
-                .width(50.dp)
-                .wrapContentHeight()
-        )
-        Text (
-            text=" University Challenge ",
-            color = Color.Black,
-            fontFamily = fontFamily,
-            fontSize = 30.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .background(color = Color(0xFFfbff9d))
-                .weight(1f)
-                .height(45.dp)
-                .wrapContentHeight()
-        )
-        Text (
-            text=" $total ",
-            color = Color.White,
-            fontFamily = fontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .background(color = Color(0xFF2f00f6))
-                .height(50.dp)
-                .width(IntrinsicSize.Max)
-                .wrapContentHeight(),
-            overflow = TextOverflow.Clip
-        )
-    }
 }
 
 @Composable
@@ -196,6 +148,68 @@ fun BannerRajan(fontFamily: FontFamily, total: String) {
         }
     }
 }
+
+@Composable
+fun BannerClarkson(fontFamily: FontFamily, total: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .background(color = Color.Black)
+            .fillMaxWidth()
+            .padding(2.dp)
+            .height(58.dp)
+    ) {
+        Text (
+            text = " UC ",
+            color = Color.White,
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .background(color = Color(0xFF2f00f6))
+                .height(50.dp)
+                .width(50.dp)
+                .wrapContentHeight()
+        )
+        Text (
+            text=" University Challenge ",
+            color = Color.Black,
+            fontFamily = fontFamily,
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .background(color = Color(0xFFfbff9d))
+                .weight(1f)
+                .height(45.dp)
+                .wrapContentHeight()
+        )
+        Text (
+            text=" $total ",
+            color = Color.White,
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .background(color = Color(0xFF2f00f6))
+                .height(50.dp)
+                .width(IntrinsicSize.Max)
+                .wrapContentHeight(),
+            overflow = TextOverflow.Clip
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatDate(date: String, pattern: String = "dd-MM-yy"): String {
+    val parsedDate = LocalDate.parse(date)
+    val formatter = DateTimeFormatter.ofPattern(pattern)
+    return parsedDate.format(formatter)
+}
+
+
 
 
 

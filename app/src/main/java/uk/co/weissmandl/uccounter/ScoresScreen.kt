@@ -1,5 +1,7 @@
 package uk.co.weissmandl.uccounter
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
@@ -15,7 +17,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +43,7 @@ fun ScoreScreen(
         }
     )
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ScoreCard(
     score: Score,
@@ -49,14 +51,14 @@ fun ScoreCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var deleteConfirmation by remember { mutableStateOf(false) }
+    val formattedDate = formatDate(score.date)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .animateContentSize(),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        shape = RoundedCornerShape(8.dp)
     ) {
         Column(
             modifier = Modifier
@@ -69,7 +71,7 @@ fun ScoreCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = score.date,
+                    text = formattedDate,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )

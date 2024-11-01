@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,8 +41,10 @@ import java.util.Calendar
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(viewModel: MainViewModel) {
-    var showDatePicker = remember { mutableStateOf(false) }
+    var datePicker = remember { mutableStateOf(false) }
+    var saveConfirmation = remember { mutableStateOf(false) }
     var selectedDate: LocalDate = LocalDate.now()
+    val formattedDate = formatDate((selectedDate.toString()))
     val starterCount by viewModel.starterCount.observeAsState(0)
     val bonusCount by viewModel.bonusCount.observeAsState(0)
     val total by viewModel.total.observeAsState(0)
@@ -49,13 +53,44 @@ fun HomeScreen(viewModel: MainViewModel) {
     LaunchedEffect(selectedDate) {
         viewModel.selectedDate = selectedDate
     }
-    if (showDatePicker.value) {
+    if (datePicker.value) {
         DatePickerDialog(
-            onDismissRequest = { showDatePicker.value = false },
+            onDismissRequest = { datePicker.value = false },
             onDateChange = { year, month, day ->
                 selectedDate = LocalDate.of(year, month + 1, day)
                 viewModel.selectedDate = selectedDate
-                showDatePicker.value = false
+                datePicker.value = false
+            }
+        )
+    }
+
+    if (saveConfirmation.value) {
+        AlertDialog(
+            onDismissRequest = { saveConfirmation.value = false },
+            title = { Text(text = "Confirm Save") },
+            text = {
+                Column {
+                    Text(text = "Do you want to save the score with today's date: $formattedDate?")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TextButton(
+                        onClick = { datePicker.value = true }
+                    ) {
+                        Text(text = "Change Date")
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.saveScore()
+                    saveConfirmation.value = false
+                }) {
+                    Text(text = "Save")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { saveConfirmation.value = false }) {
+                    Text(text = "Cancel")
+                }
             }
         )
     }
@@ -105,13 +140,10 @@ fun HomeScreen(viewModel: MainViewModel) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
-            homePageButton(onClick = { showDatePicker.value = true }, text = "Pick Date")
-            homePageButton(onClick = { viewModel.saveScore() }, text = "Save")
-//            homePageButton(onClick = { viewModel.saveScore() }, text = "Save")
+            homePageButton(onClick = { saveConfirmation.value = true }, text = "Save")
         }
         Spacer(modifier = Modifier.weight(1f))
 
-        // Additional Controls for bonus adjustments and reset
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
