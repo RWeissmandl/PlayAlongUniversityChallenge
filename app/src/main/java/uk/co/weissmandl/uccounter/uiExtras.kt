@@ -2,6 +2,7 @@ package uk.co.weissmandl.uccounter
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -111,8 +113,9 @@ fun Banner(fontFamily: FontFamily, total: String) {
             modifier = Modifier
                 .background(color = Color(0xFF2f00f6))
                 .height(50.dp)
-                .width(50.dp)
-                .wrapContentHeight()
+                .width(IntrinsicSize.Max)
+                .wrapContentHeight(),
+            overflow = TextOverflow.Clip
         )
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
@@ -28,11 +29,21 @@ import androidx.compose.ui.unit.dp
 import uk.co.weissmandl.uccounter.models.Score
 
 @Composable
-fun ScoreScreen(savedScores: List<Score>) {
-    Scores(scores = savedScores)
+fun ScoreScreen(
+    viewModel: MainViewModel,
+    savedScores: List<Score>
+) {
+    Scores(
+        scores = savedScores,
+        onDeleteScore = { score -> viewModel.deleteScore(score)
+        }
+    )
 }
 @Composable
-fun ScoreCard(score: Score) {
+fun ScoreCard(
+    score: Score,
+    onDeleteClick: (Score) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
@@ -52,9 +63,9 @@ fun ScoreCard(score: Score) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Total: ${score.total}",
+                    text = "${score.total}",
                     style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.weight(1f) // Push the icon to the right
+                    modifier = Modifier.weight(1f)
                 )
                 IconButton(
                     onClick = { expanded = !expanded }
@@ -67,27 +78,49 @@ fun ScoreCard(score: Score) {
             }
             AnimatedVisibility(visible = expanded) {
                 Column(modifier = Modifier.padding(top = 8.dp)) {
-                    Text(
-                        text = "Starters: ${score.starterCount}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = "Bonus: ${score.bonusCount}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                       Column{
+                           Text(
+                               text = "Date: ${score.date}",
+                               style = MaterialTheme.typography.bodySmall
+                           )
+                           Text(
+                               text = "Starters: ${score.starterCount}",
+                               style = MaterialTheme.typography.bodyMedium
+                           )
+                           Text(
+                               text = "Bonus: ${score.bonusCount}",
+                               style = MaterialTheme.typography.bodyMedium
+                           )
+                       }
+                        IconButton(
+                            onClick = {onDeleteClick(score)},
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete Score"
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
 @Composable
-fun Scores(scores: List<Score>) {
+fun Scores(
+    scores: List<Score>,
+    onDeleteScore: (Score) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
     ) {
         items(scores) { score ->
-            ScoreCard(score = score)
+            ScoreCard(score = score, onDeleteClick = onDeleteScore)
         }
     }
 }

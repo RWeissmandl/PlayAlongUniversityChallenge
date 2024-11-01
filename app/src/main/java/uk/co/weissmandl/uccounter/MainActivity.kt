@@ -75,7 +75,15 @@ class MainActivity : ComponentActivity() {
                                 HomeScreen(viewModel = viewModel)
                             }
                             composable("scores") {
-                                ScoreScreen(savedScores = viewModel.savedScores.observeAsState(emptyList()).value)
+                                ScoreScreen(
+                                    viewModel = viewModel,
+                                    savedScores = viewModel.savedScores.observeAsState(emptyList()).value
+                                )
+                            }
+                            composable("averages") {
+                                AveragesScreen(
+                                    savedScores = viewModel.savedScores.observeAsState(emptyList()).value
+                                )
                             }
                         }
                     }

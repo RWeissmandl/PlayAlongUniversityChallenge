@@ -45,6 +45,14 @@ class MainViewModel(private val scoreDao: ScoreDao) : ViewModel() {
             )
             scoreDao.insertScore(newScore)
             fetchAllScores()
+            resetCounts()
+        }
+    }
+
+    fun deleteScore(score: Score) {
+        viewModelScope.launch {
+            scoreDao.deleteScore(score)
+            fetchAllScores()
         }
     }
 
