@@ -13,11 +13,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,23 +48,31 @@ fun ScoreCard(
     onDeleteClick: (Score) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var deleteConfirmation by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .animateContentSize(),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.Start
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Text(
+                    text = score.date,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.weight(1f)
+                )
                 Text(
                     text = "${score.total}",
                     style = MaterialTheme.typography.headlineLarge,
@@ -77,39 +88,62 @@ fun ScoreCard(
                 }
             }
             AnimatedVisibility(visible = expanded) {
-                Column(modifier = Modifier.padding(top = 8.dp)) {
-                    Row(modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                       Column{
-                           Text(
-                               text = "Date: ${score.date}",
-                               style = MaterialTheme.typography.bodySmall
-                           )
-                           Text(
-                               text = "Starters: ${score.starterCount}",
-                               style = MaterialTheme.typography.bodyMedium
-                           )
-                           Text(
-                               text = "Bonus: ${score.bonusCount}",
-                               style = MaterialTheme.typography.bodyMedium
-                           )
-                       }
-                        IconButton(
-                            onClick = {onDeleteClick(score)},
-                            modifier = Modifier.fillMaxWidth()
+                Column(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .fillMaxWidth(),
+                ) {
+                    Text(
+                        text = "Starters: ${score.starterCount}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Bonus: ${score.bonusCount}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    IconButton(
+                        onClick = {deleteConfirmation = true},
+                        modifier = Modifier.fillMaxWidth()
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete Score"
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Score"
+                        )
                     }
                 }
             }
         }
     }
+    if (deleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { deleteConfirmation = false },
+            title = {
+                Text(text = "Confirm Deletion")
+            },
+            text = {
+                Text(text = "Are you sure you want to delete this score?")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDeleteClick(score)
+                        deleteConfirmation = false
+                    }
+                ) {
+                    Text(text = "Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { deleteConfirmation = false }
+                ) {
+                    Text(text = "No")
+                }
+            }
+        )
+    }
 }
+
 @Composable
 fun Scores(
     scores: List<Score>,
