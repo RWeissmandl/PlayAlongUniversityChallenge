@@ -1,89 +1,130 @@
 package uk.co.weissmandl.uccounter
-//
-//import androidx.compose.foundation.layout.Arrangement
-//import androidx.compose.foundation.layout.ColumnScopeInstance.weight
-//import androidx.compose.foundation.layout.Row
-//import androidx.compose.foundation.layout.Spacer
-//import androidx.compose.foundation.layout.fillMaxWidth
-//import androidx.compose.foundation.layout.height
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.material3.Text
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.text.style.TextAlign
-//import androidx.compose.ui.unit.dp
-//import androidx.compose.ui.unit.sp
-//
-//@Composable
-//fun HomeScreen(total: Int, starterCount: Int, bonusCount: Int, savedScores: List<MainActivity.Score>) {
-//    Text(
-//        text = "$total",
-//        fontSize = 70.sp,
-//        modifier = Modifier.fillMaxWidth(),
-//        textAlign = TextAlign.Center
-//    )
-//    Spacer(modifier = Modifier.height(50.dp))
-//
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.SpaceEvenly,
-//        modifier = Modifier.fillMaxWidth()
-//    ) {
-//        Question("Starter Question", 10, starterCount, onCountChange = { newCount ->
-//            starterCount = newCount
-//        })
-//    }
-//    Spacer(modifier = Modifier.height(30.dp))
-//
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.SpaceEvenly,
-//        modifier = Modifier.fillMaxWidth()
-//    ) {
-//        Question("Bonus Question", 5, bonusCount, onCountChange = {newCount ->
-//            bonusCount = newCount
-//        })
-//    }
-//    Spacer(modifier = Modifier.weight(1f))
-//
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.SpaceEvenly,
-//        modifier = Modifier.fillMaxWidth()
-//    ) {
-//        homePageButton(
-//            onClick = { val newScore = MainActivity.Score(total, starterCount, bonusCount)
-//                savedScores = savedScores + newScore
-//                starterCount = 0
-//                bonusCount = 0
-//                total = 0
-//            },
-//            text = "Save"
-//        )}
-//    Spacer(modifier = Modifier.weight(1f))
-//
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.SpaceEvenly,
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(15.dp)
-//    ) {
-//        homePageButton(
-//            onClick = { bonusCount -= 10 },
-//            text = "-10"
-//        )
-//        homePageButton(
-//            onClick = { bonusCount -= 5 },
-//            text = "-5"
-//        )
-//        homePageButton(
-//            onClick = {
-//                starterCount = 0
-//                bonusCount = 0
-//                total = 0 },
-//            text = "Reset"
-//        )
-//    }
-//}
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+@Composable
+fun HomeScreen(viewModel: MainViewModel) {
+    val starterCount by viewModel.starterCount.observeAsState(0)
+    val bonusCount by viewModel.bonusCount.observeAsState(0)
+    val total by viewModel.total.observeAsState(0)
+    val helveticaneue = FontFamily(Font(R.font.helveticaneue, FontWeight.Bold))
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "$total",
+            fontSize = 70.sp,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(30.dp))
+
+        // Starter Question
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Question("Starter Question", 10, starterCount, onCountChange = { newCount ->
+                viewModel.updateStarterCount(newCount)
+            })
+        }
+        Spacer(modifier = Modifier.height(30.dp))
+
+        // Bonus Question
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Question("Bonus Question", 5, bonusCount, onCountChange = { newCount ->
+                viewModel.updateBonusCount(newCount)
+            })
+        }
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Save Button
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            homePageButton(onClick = { viewModel.saveScore() }, text = "Save")
+        }
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Additional Controls for bonus adjustments and reset
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp)
+        ) {
+            homePageButton(onClick = { viewModel.updateBonusCount(bonusCount - 10) }, text = "-10")
+            homePageButton(onClick = { viewModel.updateBonusCount(bonusCount - 5) }, text = "-5")
+            homePageButton(onClick = {
+                viewModel.updateStarterCount(0)
+                viewModel.updateBonusCount(0)
+            }, text = "Reset")
+        }
+    }
+}
+
+@Composable
+fun Question(title: String, questionType: Int, count: Int, onCountChange: (Int) -> Unit) {
+    homePageButton(
+        onClick = {
+            val newCount = count + questionType
+            onCountChange(newCount) },
+        text = "$title   +$questionType"
+    )
+    Text(
+        text = "$count",
+        fontSize = 30.sp,
+    )
+}
+
+@Composable
+fun homePageButton(onClick: () -> Unit, text: String) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(Color(0xFF2f00f6)),
+        shape = RectangleShape
+    ) {
+        Text(
+            text = text,
+            color = Color.White
+        )
+    }
+}
