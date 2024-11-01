@@ -1,5 +1,8 @@
 package uk.co.weissmandl.uccounter
 
+import android.app.DatePickerDialog
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,25 +17,48 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.time.LocalDate
+import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(viewModel: MainViewModel) {
+    var showDatePicker = remember { mutableStateOf(false) }
+    var selectedDate: LocalDate = LocalDate.now()
     val starterCount by viewModel.starterCount.observeAsState(0)
     val bonusCount by viewModel.bonusCount.observeAsState(0)
     val total by viewModel.total.observeAsState(0)
     val helveticaneue = FontFamily(Font(R.font.helveticaneue, FontWeight.Bold))
+
+    LaunchedEffect(selectedDate) {
+        viewModel.selectedDate = selectedDate
+    }
+    if (showDatePicker.value) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker.value = false },
+            onDateChange = { year, month, day ->
+                selectedDate = LocalDate.of(year, month + 1, day)
+                viewModel.selectedDate = selectedDate
+                showDatePicker.value = false
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -79,7 +105,9 @@ fun HomeScreen(viewModel: MainViewModel) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
+            homePageButton(onClick = { showDatePicker.value = true }, text = "Pick Date")
             homePageButton(onClick = { viewModel.saveScore() }, text = "Save")
+//            homePageButton(onClick = { viewModel.saveScore() }, text = "Save")
         }
         Spacer(modifier = Modifier.weight(1f))
 
@@ -113,6 +141,27 @@ fun Question(title: String, questionType: Int, count: Int, onCountChange: (Int) 
         text = "$count",
         fontSize = 30.sp,
     )
+}
+
+@Composable
+fun DatePickerDialog(
+    onDismissRequest: () -> Unit,
+    onDateChange: (year: Int, month: Int, day: Int) -> Unit
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    DatePickerDialog(
+        context,
+        { _, year, month, day ->
+            onDateChange(year, month, day)
+        },
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.DAY_OF_MONTH)
+    ).apply {
+        setOnDismissListener { onDismissRequest() }
+        show()
+    }
 }
 
 @Composable

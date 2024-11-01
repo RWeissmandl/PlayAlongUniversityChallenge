@@ -2,10 +2,12 @@ package uk.co.weissmandl.uccounter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +47,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +66,7 @@ class MainActivity : ComponentActivity() {
                 val helveticaneue = FontFamily(Font(R.font.helveticaneue, FontWeight.Bold))
                 @OptIn(ExperimentalMaterial3Api::class)
                 Scaffold(
-                    topBar = { Banner(fontFamily = helveticaneue, total = "$total") },
+                    topBar = { BannerRajan(fontFamily = helveticaneue, total = "$total") },
                     bottomBar = { BottomNavBar(navController = navController) }
                 ) { contentPadding ->
                     Box(modifier = Modifier

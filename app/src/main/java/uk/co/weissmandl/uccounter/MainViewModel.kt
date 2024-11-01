@@ -1,5 +1,7 @@
 package uk.co.weissmandl.uccounter
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import uk.co.weissmandl.uccounter.models.Score
 import uk.co.weissmandl.uccounter.models.ScoreDao
+import java.time.LocalDate
 
 class MainViewModel(private val scoreDao: ScoreDao) : ViewModel() {
 
@@ -22,6 +25,9 @@ class MainViewModel(private val scoreDao: ScoreDao) : ViewModel() {
     private val _savedScores = MutableLiveData<List<Score>>()
     val savedScores: LiveData<List<Score>> = _savedScores
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    var selectedDate: LocalDate = LocalDate.now()
+
     init {
         fetchAllScores()
     }
@@ -36,12 +42,14 @@ class MainViewModel(private val scoreDao: ScoreDao) : ViewModel() {
         recalculateTotal()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun saveScore() {
         viewModelScope.launch {
             val newScore = Score(
                 total = _total.value ?: 0,
                 starterCount = _starterCount.value ?: 0,
-                bonusCount = _bonusCount.value ?: 0
+                bonusCount = _bonusCount.value ?: 0,
+                date = selectedDate.toString()
             )
             scoreDao.insertScore(newScore)
             fetchAllScores()
