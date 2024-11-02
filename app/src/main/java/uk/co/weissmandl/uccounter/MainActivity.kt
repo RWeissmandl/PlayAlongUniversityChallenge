@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -70,6 +71,7 @@ class MainActivity : ComponentActivity() {
                     bottomBar = { BottomNavBar(navController = navController) }
                 ) { contentPadding ->
                     Box(modifier = Modifier
+                        .fillMaxSize()
                         .padding(contentPadding)
                         .padding(10.dp)
                     ) {

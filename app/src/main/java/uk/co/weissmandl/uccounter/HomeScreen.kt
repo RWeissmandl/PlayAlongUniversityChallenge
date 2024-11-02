@@ -3,7 +3,9 @@ package uk.co.weissmandl.uccounter
 import android.app.DatePickerDialog
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,10 +14,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,7 +40,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.time.LocalDate
@@ -95,84 +102,172 @@ fun HomeScreen(viewModel: MainViewModel) {
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = "$total",
-            fontSize = 70.sp,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(30.dp))
-
-        // Starter Question
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Question("Starter Question", 10, starterCount, onCountChange = { newCount ->
-                viewModel.updateStarterCount(newCount)
-            })
-        }
-        Spacer(modifier = Modifier.height(30.dp))
-
-        // Bonus Question
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Question("Bonus Question", 5, bonusCount, onCountChange = { newCount ->
-                viewModel.updateBonusCount(newCount)
-            })
-        }
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Save Button
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            homePageButton(onClick = { saveConfirmation.value = true }, text = "Save")
-        }
-        Spacer(modifier = Modifier.weight(1f))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
+    Box(modifier = Modifier
+        .fillMaxSize(),
+    ){
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(15.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            homePageButton(onClick = { viewModel.updateBonusCount(bonusCount - 10) }, text = "-10")
-            homePageButton(onClick = { viewModel.updateBonusCount(bonusCount - 5) }, text = "-5")
-            homePageButton(onClick = {
-                viewModel.updateStarterCount(0)
-                viewModel.updateBonusCount(0)
-            }, text = "Reset")
+            // Total
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "TOTAL SCORE",
+                        style = MaterialTheme.typography.titleMedium,
+                        //color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = Color.DarkGray,
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        text = "$total",
+                        fontSize = 68.sp,
+                        style = MaterialTheme.typography.displayLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            // Starter & Bonus Questions
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    ScoreCategory(
+                        title = "Starter Questions",
+                        score = starterCount,
+                        points = 10,
+                        onAdd = { viewModel.updateStarterCount(starterCount + 10) }
+                    )
+                    Divider()
+                    ScoreCategory(
+                        title = "Bonus Questions",
+                        score = bonusCount,
+                        points = 5,
+                        onAdd = { viewModel.updateBonusCount(bonusCount + 5) }
+                    )
+                }
+            }
+
+            // Other buttons (-10, -5, reset)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    QuickActionButton(
+                        text = "-10",
+                        onClick = { viewModel.updateBonusCount(bonusCount - 10) }
+                    )
+                    QuickActionButton(
+                        text = "-5",
+                        onClick = { viewModel.updateBonusCount(bonusCount - 5) }
+                    )
+                    QuickActionButton(
+                        text = "Reset",
+                        onClick = {
+                            viewModel.updateStarterCount(0)
+                            viewModel.updateBonusCount(0)
+                        }
+                    )
+                }
+            }
+
+            // Save Button
+            Button(
+                onClick = { saveConfirmation.value = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = "SAVE SCORE",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
     }
 }
 
 @Composable
-fun Question(title: String, questionType: Int, count: Int, onCountChange: (Int) -> Unit) {
-    homePageButton(
-        onClick = {
-            val newCount = count + questionType
-            onCountChange(newCount) },
-        text = "$title   +$questionType"
-    )
-    Text(
-        text = "$count",
-        fontSize = 30.sp,
-    )
+fun ScoreCategory(
+    title: String,
+    score: Int,
+    points: Int,
+    onAdd: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = "Score: $score",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Button(
+            onClick = onAdd,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondary
+            )
+        ) {
+            Text(text = "+$points")
+        }
+    }
+}
+
+@Composable
+fun QuickActionButton(
+    text: String,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        onClick = onClick,
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = MaterialTheme.colorScheme.primary
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+    ) {
+        Text(text = text)
+    }
 }
 
 @Composable

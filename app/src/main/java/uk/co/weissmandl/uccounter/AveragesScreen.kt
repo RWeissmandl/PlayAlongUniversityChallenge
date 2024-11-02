@@ -38,7 +38,7 @@ fun AveragesScreen(savedScores: List<Score>) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        StatCard(
+        averagesStatCard(
             title = "Average Total",
             value = "$averageTotal",
             description = "Average of all scores"
@@ -48,13 +48,13 @@ fun AveragesScreen(savedScores: List<Score>) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            StatCard(
+            averagesStatCard(
                 modifier = Modifier.weight(1f),
                 title = "Avg Starters",
                 value = "$averageStarters",
                 description = "Per game"
             )
-            StatCard(
+            averagesStatCard(
                 modifier = Modifier.weight(1f),
                 title = "Avg Bonus",
                 value = "$averageBonus",
@@ -66,13 +66,13 @@ fun AveragesScreen(savedScores: List<Score>) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            StatCard(
+            averagesStatCard(
                 modifier = Modifier.weight(1f),
                 title = "Highest",
                 value = "$highestScore",
                 description = "Best score"
             )
-            StatCard(
+            averagesStatCard(
                 modifier = Modifier.weight(1f),
                 title = "Lowest",
                 value = "$lowestScore",
@@ -81,7 +81,7 @@ fun AveragesScreen(savedScores: List<Score>) {
         }
 
         // Games played card
-        StatCard(
+        averagesStatCard(
             title = "Games Played",
             value = "${savedScores.size}",
             description = "Total games recorded"
@@ -90,7 +90,7 @@ fun AveragesScreen(savedScores: List<Score>) {
 }
 
 @Composable
-fun StatCard(
+fun averagesStatCard(
     modifier: Modifier = Modifier,
     title: String,
     value: String,
