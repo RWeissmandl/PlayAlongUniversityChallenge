@@ -1,0 +1,1 @@
+This app allows you to play along with University Challenge. Play Screen keeps track of your current game, +10 points for starter questions, +5 points for bonus questions. Save each game and backdate if you missed a week. Score Screen displays all Scores. Keep progress of scores with Average Screen.
